@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">React Wallpaper Abyss API sample</string>
+    <string name="api_key"></string>
+</resources>
