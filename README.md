@@ -1,5 +1,5 @@
 # React Wallpaper Abyss API
-Reactive library that implements [The Wallpaper Abyss API](https://wall.alphacoders.com/api.php) 
+Reactive kotlin library that implements [The Wallpaper Abyss API](https://wall.alphacoders.com/api.php) 
 
 The Wallpaper Abyss API is an HTTP/JSON based API allows you to use huge base of high quality wallpapers.
 
