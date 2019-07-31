@@ -2,11 +2,17 @@ package com.gmail.mrkondakovda.reactwallpaperabyssapi
 
 import android.graphics.BitmapFactory
 import com.gmail.mrkondakovda.reactwallpaperabyssapi.api.WallpaperAbyssAPI
+import com.gmail.mrkondakovda.reactwallpaperabyssapi.api.WallpaperInfo
 import com.gmail.mrkondakovda.reactwallpaperabyssapi.responses.*
+import io.reactivex.Completable
 import io.reactivex.Observable
+import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okio.Okio
+import java.io.File
 import java.util.concurrent.TimeUnit
+
 
 class ReactWallpaperAbyssAPI {
     private val api = WallpaperAbyssAPI.instance
@@ -603,10 +609,10 @@ class ReactWallpaperAbyssAPI {
         return api.getQueryCount(parameters)
     }
 
-    fun getData(url: String) =
+    fun downloadImageBitmap(wallpaperInfo: WallpaperInfo) =
         Observable.fromCallable {
 
-            val result = httpClientInstance.newCall(Request.Builder().url(url).build()).execute()
+            val result = httpClientInstance.newCall(Request.Builder().url(wallpaperInfo.urlImage).build()).execute()
 
             if (result.isSuccessful) {
                 result.body()?.let {
@@ -616,7 +622,26 @@ class ReactWallpaperAbyssAPI {
             } else
                 throw Exception("Http request result unsuccessful")
 
-        }
+        }.subscribeOn(Schedulers.io())
+
+    fun downloadImageBitmapToFile(wallpaperInfo: WallpaperInfo, file: File) =
+        Completable.create { emitter ->
+
+            val result = httpClientInstance.newCall(Request.Builder().url(wallpaperInfo.urlImage).build()).execute()
+
+            if (result.isSuccessful) {
+                result.body()?.let {
+
+                    val sink = Okio.buffer(Okio.sink(file))
+                    it.source().readAll(sink.buffer())
+                    sink.flush()
+                    emitter.onComplete()
+
+                }
+            } else
+                emitter.onError(Exception("Http request result unsuccessful"))
+
+        }.subscribeOn(Schedulers.io())
 
 
     enum class Operator {

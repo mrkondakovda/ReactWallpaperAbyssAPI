@@ -31,7 +31,7 @@ class MainActivity : RxAppCompatActivity() {
 
         RxAdapterView.itemClicks(wallpapers).subscribe { pos ->
             val wallpaperInfo = wallpapers.adapter.getItem(pos) as WallpaperInfo
-            requestImage(api.getData(wallpaperInfo.urlImage))
+            requestImage(api.downloadImageBitmap(wallpaperInfo))
         }
 
         RxView.clicks(get_random).subscribe {
