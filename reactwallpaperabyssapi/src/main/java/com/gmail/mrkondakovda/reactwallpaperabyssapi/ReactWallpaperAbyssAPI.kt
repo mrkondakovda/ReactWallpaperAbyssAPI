@@ -635,6 +635,7 @@ class ReactWallpaperAbyssAPI {
                     val sink = Okio.buffer(Okio.sink(file))
                     it.source().readAll(sink.buffer())
                     sink.flush()
+                    sink.close()
                     emitter.onComplete()
 
                 }
